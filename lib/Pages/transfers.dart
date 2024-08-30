@@ -67,13 +67,9 @@ class _TrasnfersPageState extends State<TrasnfersPage> {
                MaterialPageRoute(builder: (context) => const ReportsPage()),
               );
              // Additional pages can be added here with further else-if conditions
-          }
-            // }else if (index == 1) {
-            //   Navigator.pushReplacement(
-            //     context,
-            //     // MaterialPageRoute(builder: (context) => const MorePage()),
-            //   );
-            // }
+          }else if (index == 3) {
+              _showAlertDialog(context);
+            }
           });
         },
       ),
@@ -245,5 +241,30 @@ class _TrasnfersPageState extends State<TrasnfersPage> {
       ],
     );
   }
+
+void _showAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Sorry!"),
+          content: const Text("It's not avilable yet."),
+          actions: [
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                 Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const TrasnfersPage()),
+              );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
 }
 

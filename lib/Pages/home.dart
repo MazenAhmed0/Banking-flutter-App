@@ -46,16 +46,17 @@ class _HomePageState extends State<HomePage> {
                 context,
                 MaterialPageRoute(builder: (context) => const TrasnfersPage()),
               );
-            }else if (index == 2) {
+            } else if (index == 2) {
               Navigator.pushReplacement(
                 context,
                MaterialPageRoute(builder: (context) => const ReportsPage()),
               );
              // Additional pages can be added here with further else-if conditions
+          } else if (index == 3) {
+            _showAlertDialog(context);
           }
-          }
-          );
-        },
+        });
+      },
       ),
       body: SingleChildScrollView(
         child: Stack(
@@ -375,5 +376,27 @@ class _HomePageState extends State<HomePage> {
   }
 
  
+void _showAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Sorry!"),
+          content: const Text("It's not avilable yet."),
+          actions: [
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                 Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage()),
+              );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
 }

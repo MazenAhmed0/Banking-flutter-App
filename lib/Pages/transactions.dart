@@ -49,6 +49,8 @@ class _TransactionsPageState extends State<TransactionsPage> {
                 context,
                 MaterialPageRoute(builder: (context) => const TrasnfersPage()),
               );
+            } else if (index == 3) {
+              _showAlertDialog(context);
             }
             // Additional pages can be added here with further else-if conditions
           });
@@ -203,4 +205,30 @@ class _TransactionsPageState extends State<TransactionsPage> {
       ],
     );
   }
+
+
+  void _showAlertDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Sorry!"),
+          content: const Text("It's not avilable yet."),
+          actions: [
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                 Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const TransactionsPage()),
+              );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
 }
