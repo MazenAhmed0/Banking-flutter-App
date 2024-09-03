@@ -1,7 +1,7 @@
 import 'package:banking/Pages/home.dart';
 import 'package:banking/Pages/reports.dart';
 import 'package:banking/models/apps.dart';
-import 'package:banking/models/transfersModel.dart';
+import 'package:banking/models/transfers_model.dart';
 import 'package:banking/widgets/nav_bottom.dart';
 import 'package:flutter/material.dart';
 

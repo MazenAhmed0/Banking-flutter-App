@@ -77,7 +77,7 @@ class _ReportsPageState extends State<ReportsPage> {
                               ),
                             ),
                             Text(
-                              '\$50.00\/ \$100.00',
+                              '\$50.00/ \$100.00',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w500
@@ -121,7 +121,7 @@ class _ReportsPageState extends State<ReportsPage> {
                               ),
                             ),
                             Text(
-                              '\$50.00\/ \$100.00',
+                              '\$50.00/ \$100.00',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w500
