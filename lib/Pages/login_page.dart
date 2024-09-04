@@ -1,6 +1,8 @@
 import 'package:banking/Pages/home.dart';
 import 'package:banking/Pages/signup_page.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -10,10 +12,46 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
-  String _email = '';
-  String _password = '';
+  
   bool _isPasswordVisible = false;
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+
+  Future<void> _login() async {
+    if (_formKey.currentState!.validate()) {
+      final String name = _nameController.text.toString();
+      final String password = _passwordController.text.toString();
+
+
+        final response = await http.post(
+        Uri.parse('https://ptechapp-5ab6d15ba23c.herokuapp.com/user/authenticate'), // Replace with your API endpoint
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'username': name, 'password': password}),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        var successState = responseData['success'];
+        if (successState == true) {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const HomePage()));
+        print(responseData);
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Usrname or password is wrong')),
+          );
+          print(responseData);
+        }
+      } else {
+        // Handle failed login
+        throw Exception('Failed to load data');
+      }
+
+
+
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +73,7 @@ class _LoginScreenState extends State<LoginPage> {
                       children: [
                        const SizedBox(height: 30,),
                         TextFormField(
+                           controller: _nameController,
                           decoration: const InputDecoration(labelText: 'Email'),
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
@@ -43,12 +82,10 @@ class _LoginScreenState extends State<LoginPage> {
                             }
                             return null;
                           },
-                          onSaved: (value) {
-                            _email = value!;
-                          },
                         ),
                         const SizedBox(height: 30,),
                         TextFormField(
+                          controller: _passwordController,
                           decoration: InputDecoration(
                             labelText: 'Password',
                             suffixIcon: IconButton(
@@ -71,18 +108,15 @@ class _LoginScreenState extends State<LoginPage> {
                             }
                             return null;
                           },
-                          onSaved: (value) {
-                            _password = value!;
-                          },
                         ),
                         const SizedBox(height: 20),
-                        _signupButton(context),
+                        _loginButton(context),
                         const SizedBox(height: 30),
                         const LineWithText(text: 'OR'),
                         const SizedBox(height: 30),
                         _loginLogos(),
                         const SizedBox(height: 30,),
-                        _haveAccountSection()
+                        _createAccountSection()
                       ],
                     ),
                   ),
@@ -95,7 +129,7 @@ class _LoginScreenState extends State<LoginPage> {
     );
   }
 
-  Row _haveAccountSection() {
+  Row _createAccountSection() {
     return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -146,7 +180,7 @@ class _LoginScreenState extends State<LoginPage> {
         );
   }
 
-  Container _signupButton(BuildContext context) {
+  Container _loginButton(BuildContext context) {
     return Container(
           height: 75,
           margin: const EdgeInsets.only(left: 50.0, right: 50, top: 30),
@@ -156,7 +190,7 @@ class _LoginScreenState extends State<LoginPage> {
           width: double.infinity,
           child: TextButton(
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const HomePage()));
+            _login();
           },
           style: TextButton.styleFrom(
             backgroundColor: const Color.fromARGB(255, 94, 2, 155),
