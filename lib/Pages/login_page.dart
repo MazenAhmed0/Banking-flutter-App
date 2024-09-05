@@ -12,7 +12,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginPage> {
-  
+  String loginText = '';
+  Color textColor = Colors.red;
   bool _isPasswordVisible = false;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
@@ -23,7 +24,6 @@ class _LoginScreenState extends State<LoginPage> {
     if (_formKey.currentState!.validate()) {
       final String name = _nameController.text.toString();
       final String password = _passwordController.text.toString();
-
 
         final response = await http.post(
         Uri.parse('https://ptechapp-5ab6d15ba23c.herokuapp.com/user/authenticate'), // Replace with your API endpoint
@@ -39,13 +39,10 @@ class _LoginScreenState extends State<LoginPage> {
           if (successState == true) {
             Navigator.push(context, MaterialPageRoute(builder: (_) => MyApp(username: userName.toString(),)));
         }else{
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Usrname or password is wrong'),
-              duration: Duration(seconds: 2),
-              backgroundColor: Colors.black,
-              ),
-          );
+          setState(() {
+            loginText = 'Username or Password is wrong.'; 
+            textColor = Colors.red;
+          });
         }
       } else {
         // Handle failed login
@@ -75,10 +72,18 @@ class _LoginScreenState extends State<LoginPage> {
                     key: _formKey,
                     child: Column(
                       children: [
-                       const SizedBox(height: 30,),
+                        Text(
+                          loginText,
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: textColor,
+
+                          ),
+                        ),
+                       const SizedBox(height: 20,),
                         TextFormField(
                            controller: _nameController,
-                          decoration: const InputDecoration(labelText: 'Email'),
+                          decoration: const InputDecoration(labelText: 'Username'),
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -195,6 +200,13 @@ class _LoginScreenState extends State<LoginPage> {
           child: TextButton(
           onPressed: () {
             _login();
+            FocusScope.of(context).unfocus();
+            if (_formKey.currentState!.validate()) {
+                  setState(() {
+                    loginText = 'Processing data ...';
+                    textColor = const Color.fromARGB(255, 94, 2, 155);
+                  });
+                }
           },
           style: TextButton.styleFrom(
             backgroundColor: const Color.fromARGB(255, 94, 2, 155),

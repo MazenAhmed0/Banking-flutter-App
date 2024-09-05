@@ -1,37 +1,44 @@
-
+import 'package:flutter/material.dart';
 import 'package:banking/Pages/transactions.dart';
 import 'package:banking/models/trans.dart';
-import 'package:flutter/material.dart';
+import 'package:banking/methods/getUserData.dart';  // Import the separated method
 
-// ignore: must_be_immutable
 class HomePage extends StatefulWidget {
+  final String name;
 
-  String name;
-
-  HomePage({super.key, required this.name});
+  const HomePage({super.key, required this.name});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-
+  late Future<Map<String, dynamic>> _userDataFuture;
   List<TransModel> trans = [];
 
   @override
   void initState() {
     super.initState();
-    _getInitialInfo();
+    _userDataFuture = fetchJsonData(widget.name); // Fetch data when widget loads
+    _getInitialInfo(); // Initialize transaction data
   }
 
   void _getInitialInfo() {
-    trans = TransModel.getTrans();
+    trans = TransModel.getTrans(); // Initialize transaction data
   }
-  
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return FutureBuilder<Map<String, dynamic>>(
+              future: _userDataFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (snapshot.hasData) {
+                  final data = snapshot.data!;
+                  return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Stack(
@@ -62,9 +69,9 @@ class _HomePageState extends State<HomePage> {
           ),
             Column(
             children: [
-              _profileAndName(),
+              _profileAndName(data),
               const SizedBox(height: 40,),
-              _cardSection(),
+              _cardSection(data),
               const SizedBox(height: 40,),
               _transactionsLabel(context),
               const SizedBox(height: 20,),
@@ -75,9 +82,15 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+                } else {
+                  return const Center(child: Text('No data found'));
+                }
+              },
+            );
+          
   }
 
-  SafeArea _profileAndName() {
+  SafeArea _profileAndName(Map<String, dynamic> data) {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.only(top: 50, left: 30),
@@ -85,57 +98,55 @@ class _HomePageState extends State<HomePage> {
           children: [
             Row(
               children: [
-          Stack(
-            children: [
-            // Gradient border
-            Container(
-              padding: const EdgeInsets.all(4), // Space for the gradient border
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                  colors: [
-                    Color(0xFF133FD8),
-                    Color(0x4CB7004D),
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-          child: Container(
-            padding: const EdgeInsets.all(4), // Inner border thickness
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white, // Inner border color
-            ),
-            child: const CircleAvatar(
-              radius: 40, // Adjust the size of the avatar
-              backgroundImage: AssetImage('assets/images/profile.jpeg'), // Replace with your image path
-            ),
-          ),
-            ),
-            // Notification dot
-            Positioned(
-              top: 7,
-              right: 7,
-              child: Container(
-                width: 15,
-                height: 15,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFDB1337),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.white, // Add white border to separate from the avatar
-                    width: 2,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-                const SizedBox(width: 30,),
-                const Column(
+                Stack(
                   children: [
-                    Text(
+                    Container(
+                      padding: const EdgeInsets.all(4), // Space for the gradient border
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            Color(0xFF133FD8),
+                            Color(0x4CB7004D),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(4), // Inner border thickness
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white, // Inner border color
+                        ),
+                        child: const CircleAvatar(
+                          radius: 40, // Adjust the size of the avatar
+                          backgroundImage: AssetImage('assets/images/profile.jpeg'), // Replace with your image path
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 7,
+                      right: 7,
+                      child: Container(
+                        width: 15,
+                        height: 15,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFDB1337),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white, // Add white border to separate from the avatar
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 30,),
+                Column(
+                  children: [
+                    const Text(
                       'Good morning',
                       style: TextStyle(
                         fontWeight: FontWeight.w400,
@@ -143,8 +154,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Text(
-                      'ANDREA',
-                      style: TextStyle(
+                      data['username'],
+                      style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 33,
                       ),
@@ -159,7 +170,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
- Padding _cardSection() {
+  Padding _cardSection(Map<String, dynamic> data) {
+    var balance = data['balance'];
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: Container(
@@ -188,11 +200,11 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 20.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0),
                 child: Column(
                   children: [
-                    Text(
+                    const Text(
                       'Current Balance',
                       style: TextStyle(
                         fontSize: 20,
@@ -200,10 +212,10 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.black,
                       ),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     Text(
-                      '\$12567.89',
-                      style: TextStyle(
+                      '\$$balance',
+                      style: const TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.w900,
                         color: Colors.black,
@@ -262,37 +274,37 @@ class _HomePageState extends State<HomePage> {
 
   Padding _transactionsLabel(BuildContext context) {
     return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 35.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  'LAST TRANSACTIONS',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xff858585),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const TransactionsPage()),
-                    );
-                  },
-                  child: const Text(
-                    'View',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF133FDB),
-                    ),
-                  ),
-                ),
-              ],
+      padding: const EdgeInsets.symmetric(horizontal: 35.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text(
+            'LAST TRANSACTIONS',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w500,
+              color: Color(0xff858585),
             ),
-          );
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const TransactionsPage()),
+              );
+            },
+            child: const Text(
+              'View',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF133FDB),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Column _transSection() {
@@ -349,5 +361,4 @@ class _HomePageState extends State<HomePage> {
       }),
     );
   }
-
 }

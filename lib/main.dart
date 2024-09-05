@@ -35,12 +35,20 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
    int _selectedIndex = 0;
+   late dynamic userName;
 
-  final List<Widget> _pages = [
-    HomePage(name: '',),
+  late List<Widget> _pages;
+
+  @override
+  void initState() {
+    super.initState();
+    userName = widget.username;
+    _pages = [
+    HomePage(name: userName,),
     const TrasnfersPage(),
     const ReportsPage(),
   ];
+  }
   
 
   void _onItemTapped(int index) {
