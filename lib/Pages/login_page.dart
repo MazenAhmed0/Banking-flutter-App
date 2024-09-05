@@ -1,5 +1,5 @@
-import 'package:banking/Pages/home.dart';
 import 'package:banking/Pages/signup_page.dart';
+import 'package:banking/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -33,13 +33,19 @@ class _LoginScreenState extends State<LoginPage> {
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-        var successState = responseData['success'];
-        if (successState == true) {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const HomePage()));
+          var successState = responseData['success'];
+          String? userName;
+          (successState == true)?(userName = responseData['data']['username'].toString()):(userName = null);
+          if (successState == true) {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => MyApp(username: userName.toString(),)));
         print(responseData);
         }else{
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Usrname or password is wrong')),
+            const SnackBar(
+              content: Text('Usrname or password is wrong'),
+              duration: Duration(seconds: 2),
+              backgroundColor: Colors.black,
+              ),
           );
           print(responseData);
         }

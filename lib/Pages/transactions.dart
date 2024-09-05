@@ -1,7 +1,4 @@
-import 'package:banking/Pages/home.dart';
-import 'package:banking/Pages/transfers.dart';
 import 'package:banking/models/trans.dart';
-import 'package:banking/widgets/nav_bottom.dart';
 import 'package:flutter/material.dart';
 
 class TransactionsPage extends StatefulWidget {
@@ -14,7 +11,6 @@ class TransactionsPage extends StatefulWidget {
 class _TransactionsPageState extends State<TransactionsPage> {
   List<TransModel> trans = [];
 
-  int _currentPage = 0;
 
   @override
   void initState() {
@@ -32,29 +28,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-      ),
-      bottomNavigationBar: NavBottom(
-        currentPage: _currentPage,
-        onTap: (index) {
-          setState(() {
-            _currentPage = index;
-            // Navigate to the corresponding page
-            if (index == 0) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
-              );
-            } else if (index == 1) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const TrasnfersPage()),
-              );
-            } else if (index == 3) {
-              _showAlertDialog(context);
-            }
-            // Additional pages can be added here with further else-if conditions
-          });
-        },
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -205,30 +178,5 @@ class _TransactionsPageState extends State<TransactionsPage> {
       ],
     );
   }
-
-
-  void _showAlertDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Sorry!"),
-          content: const Text("It's not avilable yet."),
-          actions: [
-            TextButton(
-              child: const Text("OK"),
-              onPressed: () {
-                 Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const TransactionsPage()),
-              );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
 
 }

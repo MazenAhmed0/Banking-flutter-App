@@ -1,5 +1,5 @@
-import 'package:banking/Pages/home.dart';
 import 'package:banking/Pages/login_page.dart';
+import 'package:banking/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -53,10 +53,13 @@ Future<void> _signUp() async {
         if (response.statusCode == 200) {
           // Handle successful sign-up
           final responseData = jsonDecode(response.body);
+          var successState = responseData['success'];
+          String? userName;
+          (successState == true)?(userName = responseData['data']['username'].toString()):(userName = null);
           print('Sign-up successful: $responseData');
-          Navigator.pushReplacement(
+          Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const HomePage()), // Replace with your next screen
+            MaterialPageRoute(builder: (context) => MyApp(username: userName.toString(),)), // Replace with your next screen
           );
         } else {
           // Handle errors from the API
@@ -240,70 +243,70 @@ Future<void> _signUp() async {
 
   Row _loginLogos() {
     return Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-      
-                            },
-                          child: Image.asset(
-                            'assets/icons/google.png',
-                            height: 50,
-                          )
-                          ),
-                          const SizedBox(width: 30,),
-                          GestureDetector(
-                            onTap: () {
-      
-                            },
-                          child: Image.asset(
-                            'assets/icons/facebook.png',
-                            height: 40,
-                            )
-                          ),
-                        ],
-                      );
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () {
+
+              },
+            child: Image.asset(
+              'assets/icons/google.png',
+              height: 50,
+            )
+            ),
+            const SizedBox(width: 30,),
+            GestureDetector(
+              onTap: () {
+
+              },
+            child: Image.asset(
+              'assets/icons/facebook.png',
+              height: 40,
+              )
+            ),
+          ],
+        );
   }
 
   Container _signupButton(BuildContext context) {
     return Container(
-                        height: 75,
-                        margin: const EdgeInsets.only(left: 50.0, right: 50, top: 30),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10)
-                        ),
-                        width: double.infinity,
-                        child: TextButton(
-                        onPressed: _signUp,
-                        style: TextButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 94, 2, 155),
-                          padding: const EdgeInsets.all(16.0), 
-                        ),
-                        child: const Text(
-                         'Sign Up',
-                          style: TextStyle(
-                            color: Colors.white, 
-                            fontSize: 23.0, 
-                          ),
-                        ),
-                      ),
-                      );
+            height: 75,
+            margin: const EdgeInsets.only(left: 50.0, right: 50, top: 30),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10)
+            ),
+            width: double.infinity,
+            child: TextButton(
+            onPressed: _signUp,
+            style: TextButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 94, 2, 155),
+              padding: const EdgeInsets.all(16.0), 
+            ),
+            child: const Text(
+              'Sign Up',
+              style: TextStyle(
+                color: Colors.white, 
+                fontSize: 23.0, 
+              ),
+            ),
+          ),
+          );
   }
 
   Column _logoAndName() {
     return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.asset('assets/images/logo.jpg', height: 70,),
-                  const Text(
-                    'Sign Up',
-                    style: TextStyle(
-                      fontSize: 45,
-                      fontWeight: FontWeight.bold
-                    ),
-                  )
-                ],
-              );
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.asset('assets/images/logo.jpg', height: 70,),
+              const Text(
+                'Sign Up',
+                style: TextStyle(
+                  fontSize: 45,
+                  fontWeight: FontWeight.bold
+                ),
+              )
+            ],
+          );
   }
 }
 

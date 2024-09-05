@@ -1,6 +1,3 @@
-import 'package:banking/Pages/home.dart';
-import 'package:banking/Pages/transfers.dart';
-import 'package:banking/widgets/nav_bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
@@ -12,7 +9,6 @@ class ReportsPage extends StatefulWidget {
 }
 
 class _ReportsPageState extends State<ReportsPage> {
-  int _currentPage = 2;
 
   @override
   void initState() {
@@ -24,7 +20,6 @@ class _ReportsPageState extends State<ReportsPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
-      bottomNavigationBar:  _navBottom(context),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -377,36 +372,6 @@ class _ReportsPageState extends State<ReportsPage> {
           );
   }
 
-  NavBottom _navBottom(BuildContext context) {
-    return NavBottom(
-      currentPage: _currentPage,
-      onTap: (index) {
-        setState(() {
-          _currentPage = index;
-          // Navigate to the corresponding page
-          if (index == 0) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
-          } else if (index == 1) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const TrasnfersPage()),
-            );
-           }else if (index == 2) {
-            Navigator.pushReplacement(
-              context,
-             MaterialPageRoute(builder: (context) => const ReportsPage()),
-            );
-           // Additional pages can be added here with further else-if conditions
-        } else if (index == 3) {
-              _showAlertDialog(context);
-            }
-        });
-      },
-    );
-  }
 
     AppBar _appBar() {
     return AppBar(
@@ -509,29 +474,6 @@ class _ReportsPageState extends State<ReportsPage> {
           ),
         ),
       ],
-    );
-  }
-
-void _showAlertDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text("Sorry!"),
-          content: const Text("It's not avilable yet."),
-          actions: [
-            TextButton(
-              child: const Text("OK"),
-              onPressed: () {
-                 Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const ReportsPage()),
-              );
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 

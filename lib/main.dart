@@ -1,19 +1,72 @@
+import 'package:banking/Pages/home.dart';
+import 'package:banking/Pages/reports.dart';
 import 'package:banking/Pages/start_page.dart';
+import 'package:banking/Pages/transfers.dart';
+import 'package:banking/widgets/nav_bottom.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: StartPage(),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const StartPage(),
+      },
+    );
+  }
+}
+
+// ignore: must_be_immutable
+class MyApp extends StatefulWidget {
+  String username;
+  MyApp({super.key, required this.username});
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+   int _selectedIndex = 0;
+
+  final List<Widget> _pages = [
+    HomePage(name: '',),
+    const TrasnfersPage(),
+    const ReportsPage(),
+  ];
+  
+
+  void _onItemTapped(int index) {
+    setState(() {
+     if (index != 3) {
+       _selectedIndex = index;
+     } else{
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('It\' not avilable yet.'),
+              duration: Duration(seconds: 2),
+              backgroundColor: Colors.black,
+              ),
+          );
+     }
+    });
+  }
+
+  @override 
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _pages[_selectedIndex],
+      bottomNavigationBar: NavBottom(
+        currentPage: _selectedIndex,
+        onItemTapped: _onItemTapped,
+      ),
     );
   }
 }

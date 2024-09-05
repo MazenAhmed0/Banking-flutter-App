@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class NavBottom extends StatelessWidget {
   final int currentPage;
-  final Function(int) onTap;
+  final Function(int) onItemTapped;
 
   const NavBottom({
     super.key,
     required this.currentPage,
-    required this.onTap,
+    required this. onItemTapped,
   });
 
   @override
@@ -32,7 +32,7 @@ class NavBottom extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             GestureDetector(
-              onTap: () => onTap(0),
+              onTap: () => onItemTapped(0),
               child: Icon(
                 Icons.credit_card,
                 size: 25,
@@ -40,7 +40,7 @@ class NavBottom extends StatelessWidget {
               ),
             ),
             GestureDetector(
-              onTap: () => onTap(1),
+              onTap: () => onItemTapped(1),
               child: Image.asset(
                 'assets/icons/application.png',
                 height: 25,
@@ -49,7 +49,7 @@ class NavBottom extends StatelessWidget {
               ),
             ),
              GestureDetector(
-              onTap: () => onTap(2),
+              onTap: () => onItemTapped(2),
                child: Image.asset(
               'assets/icons/chart.png',
               height: 25,
@@ -58,7 +58,7 @@ class NavBottom extends StatelessWidget {
             ),
             ),
              GestureDetector(
-              onTap: () => onTap(3),
+              onTap: () => onItemTapped(3),
               child: Icon(
               Icons.more_horiz,
               size: 25,
