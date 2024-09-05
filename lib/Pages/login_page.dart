@@ -38,7 +38,6 @@ class _LoginScreenState extends State<LoginPage> {
           (successState == true)?(userName = responseData['data']['username'].toString()):(userName = null);
           if (successState == true) {
             Navigator.push(context, MaterialPageRoute(builder: (_) => MyApp(username: userName.toString(),)));
-        print(responseData);
         }else{
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
@@ -47,7 +46,6 @@ class _LoginScreenState extends State<LoginPage> {
               backgroundColor: Colors.black,
               ),
           );
-          print(responseData);
         }
       } else {
         // Handle failed login

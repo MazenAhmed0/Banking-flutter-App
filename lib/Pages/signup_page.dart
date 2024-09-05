@@ -41,7 +41,6 @@ Future<void> _signUp() async {
 
       final url = Uri.parse('https://ptechapp-5ab6d15ba23c.herokuapp.com/user/register'); // Replace with your API endpoint
 
-      try {
         final response = await http.post(
           url,
           headers: {
@@ -56,18 +55,14 @@ Future<void> _signUp() async {
           var successState = responseData['success'];
           String? userName;
           (successState == true)?(userName = responseData['data']['username'].toString()):(userName = null);
-          print('Sign-up successful: $responseData');
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => MyApp(username: userName.toString(),)), // Replace with your next screen
           );
         } else {
           // Handle errors from the API
-          print('Sign-up failed: ${response.body}');
         }
-      } catch (e) {
-        print('Error: $e');
-      }
+
     }
   }
 
