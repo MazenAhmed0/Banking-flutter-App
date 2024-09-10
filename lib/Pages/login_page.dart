@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginPage> {
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
+                              return 'Please enter your Username';
                             }
                             return null;
                           },

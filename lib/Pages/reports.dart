@@ -42,7 +42,7 @@ class _ReportsPageState extends State<ReportsPage> {
             child: Column(
               children: [
                 Container(
-                  height: 100,
+                  height: 103,
                   decoration: BoxDecoration(
                     color: const Color(0xFFD1ECF7),
                     borderRadius: BorderRadius.circular(24),
@@ -86,7 +86,7 @@ class _ReportsPageState extends State<ReportsPage> {
                 ),
                 const SizedBox(height: 30,),
                 Container(
-                  height: 100,
+                  height: 103,
                   decoration: BoxDecoration(
                     color: const Color(0xFFFAE2EE),
                     borderRadius: BorderRadius.circular(24),
@@ -293,7 +293,7 @@ class _ReportsPageState extends State<ReportsPage> {
             children: [
               Container(
                 height: 90,
-                width: 156,
+                width: MediaQuery.of(context).size.width * 0.4,
                 decoration: BoxDecoration(
                   color: const Color(0xFFF8E192),
                   borderRadius: BorderRadius.circular(8),
@@ -331,7 +331,7 @@ class _ReportsPageState extends State<ReportsPage> {
               ),
               Container(
                 height: 90,
-                width: 156,
+                width: MediaQuery.of(context).size.width * 0.4,
                 decoration: BoxDecoration(
                   color: const Color(0xFFB6E0F3),
                   borderRadius: BorderRadius.circular(8),

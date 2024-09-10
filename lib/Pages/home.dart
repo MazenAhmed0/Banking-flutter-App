@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:banking/Pages/transactions.dart';
 import 'package:banking/models/trans.dart';
-import 'package:banking/methods/getUserData.dart';  // Import the separated method
+import 'dart:convert'; 
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   final String name;
@@ -39,54 +41,54 @@ class _HomePageState extends State<HomePage> {
                 } else if (snapshot.hasData) {
                   final data = snapshot.data!;
                   return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Stack(
-          children: [ 
-            Positioned(
-              top: -70,
-              right: -110, 
-                child: Container(
-                  width: 230,
-                  height: 230,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFF8E192),
-                    shape: BoxShape.circle,
-                  ),
-            )
-          ),
-            Positioned(
-              top: 296,
-              left: -92, 
-                child: Container(
-                  width: 250,
-                  height: 250,
-                  decoration: const BoxDecoration(
-                    color: Color(0x4D2FCBFC),
-                    shape: BoxShape.circle,
-                  ),
-            )
-          ),
-            Column(
-            children: [
-              _profileAndName(data),
-              const SizedBox(height: 40,),
-              _cardSection(data),
-              const SizedBox(height: 40,),
-              _transactionsLabel(context),
-              const SizedBox(height: 20,),
-              _transSection(),
-            ],
-          ),
-          ]
-        ),
-      ),
-    );
+                        backgroundColor: Colors.white,
+                        body: SingleChildScrollView(
+                          child: Stack(
+                            children: [ 
+                              Positioned(
+                                top: -70,
+                                right: -110, 
+                                  child: Container(
+                                    width: 230,
+                                    height: 230,
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xFFF8E192),
+                                      shape: BoxShape.circle,
+                                    ),
+                              )
+                            ),
+                              Positioned(
+                                top: 296,
+                                left: -92, 
+                                  child: Container(
+                                    width: 250,
+                                    height: 250,
+                                    decoration: const BoxDecoration(
+                                      color: Color(0x4D2FCBFC),
+                                      shape: BoxShape.circle,
+                                    ),
+                              )
+                            ),
+                              Column(
+                              children: [
+                                _profileAndName(data),
+                                const SizedBox(height: 40,),
+                                _cardSection(data),
+                                const SizedBox(height: 40,),
+                                _transactionsLabel(context),
+                                const SizedBox(height: 20,),
+                                _transSection(),
+                              ],
+                            ),
+                            ]
+                          ),
+                        ),
+                      );
                 } else {
-                  return const Center(child: Text('No data found'));
+                      return const Center(child: Text('No data found'));
                 }
-              },
-            );
+                },
+                );
           
   }
 
@@ -171,11 +173,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Padding _cardSection(Map<String, dynamic> data) {
-    var balance = data['balance'];
+    var balance = double.parse(data['balance']);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30.0),
       child: Container(
-        height: 220,
+        height: MediaQuery.of(context).size.height * 0.27,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           gradient: const LinearGradient(
@@ -225,9 +227,9 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 15.0,),
+                padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.037,),
                 child: Container(
-                  width: 333,
+                  width: MediaQuery.of(context).size.width * 0.9,
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
@@ -361,4 +363,66 @@ class _HomePageState extends State<HomePage> {
       }),
     );
   }
+
+Future<Map<String, dynamic>> fetchJsonData(String username) async {
+  String url = 'https://ptechapp-5ab6d15ba23c.herokuapp.com/users/';
+
+  final response = await http.get(Uri.parse(url));
+
+  if (response.statusCode == 200) {
+    var responseData = json.decode(response.body);
+    String userId = '';
+    String balance = '';
+    String userFirstName = '';
+    String userLastName = '';
+    String password = '';
+
+    for (var user in responseData) {
+      if (username == user['username']) {
+        userId = user['userAccountID'].toString();
+        balance = user['balance'].toString();
+        userFirstName = user['firstName'].toString();
+        userLastName = user['lastName'].toString();
+        password = user['password'].toString();
+        break;
+      }
+    }
+
+    await saveUserData(userId, username, balance, userFirstName, userLastName, password);
+
+    return {'userID': userId, 'balance': balance, 'username': username.toUpperCase()};
+  } else {
+    throw Exception('Failed to load data');
+  }
+}
+
+Future<void> saveUserData(String userId, username, userBalance, userFirstName, userLastName, password) async{
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('userID', userId);
+  await prefs.setString('username', username);
+  await prefs.setString('userBalance', userBalance);
+  await prefs.setString('userFirstName', userFirstName);
+  await prefs.setString('userLastName', userLastName);
+  await prefs.setString('password', password);
+}
+
+Future<Map<String, String?>> getUserData() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? userId = prefs.getString('userID');
+  String? username = prefs.getString('username');
+  String? userBalance = prefs.getString('userBalance');
+  String? userFirsName = prefs.getString('userFirstName');
+  String? userLastName = prefs.getString('userLastName');
+    String? password = prefs.getString('password');
+
+  return {
+    'userId': userId,
+    'username': username,
+    'userBalance': userBalance,
+    'userFirstName': userFirsName,
+    'userLastName': userLastName,
+    'password': password,
+  };
+}
+
 }

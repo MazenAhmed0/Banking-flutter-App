@@ -1,6 +1,9 @@
+import 'package:banking/Pages/payment_screen.dart';
 import 'package:banking/models/apps.dart';
 import 'package:banking/models/transfers_model.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class TrasnfersPage extends StatefulWidget {
   const TrasnfersPage({super.key});
@@ -10,19 +13,24 @@ class TrasnfersPage extends StatefulWidget {
 }
 
 class _TrasnfersPageState extends State<TrasnfersPage> {
+
   List<AppsModel> apps = [];
   List<TransfModel> transfers = [];
-
+  
   void _getInitialInfo() {
     apps = AppsModel.getApps();
     transfers = TransfModel.getTransfers();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _getInitialInfo();
-  }
+@override
+void initState() {
+  super.initState();
+  _getInitialInfo();
+}
+
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +95,24 @@ class _TrasnfersPageState extends State<TrasnfersPage> {
                   SizedBox(
                     height: 70,
                     width: 70,
-                    child: CircleAvatar(
-                      backgroundImage: AssetImage(transfers[index].imagePath),
-                    ),
+                    child: Container(
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(colors: [
+                            Color.fromARGB(255, 141, 164, 248),
+                            Color.fromARGB(75, 253, 114, 172),
+                          ]),
+                          borderRadius: BorderRadius.all(Radius.circular(40)),),
+                      child:  const Center(
+                        child: Text(
+                          'ES',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    )
                   ),
                   const SizedBox(width: 20,),
                   Column(
@@ -115,6 +138,15 @@ class _TrasnfersPageState extends State<TrasnfersPage> {
                       )
                     ],
                   ),
+                    Padding(
+                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.067),
+                     child: const Text(
+                      '\$30',
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                                       ),
+                   )
                 ],
             ),
           ),
@@ -192,7 +224,12 @@ class _TrasnfersPageState extends State<TrasnfersPage> {
       ),
       actions: [
         GestureDetector(
-          onTap: () {},
+          onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) =>  PaymentScreen()),
+              );
+          },
           child: Container(
             margin: const EdgeInsets.all(10),
             alignment: Alignment.center,
@@ -209,6 +246,24 @@ class _TrasnfersPageState extends State<TrasnfersPage> {
     );
   }
 
+Future<Map<String, String?>> getUserData() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? userId = prefs.getString('userID');
+  String? username = prefs.getString('username');
+  String? userBalance = prefs.getString('userBalance');
+  String? userFirsName = prefs.getString('userFirstName');
+  String? userLastName = prefs.getString('userLastName');
+  return {
+    'userId': userId,
+    'username': username,
+    'userBalance': userBalance,
+    'userFirstName': userFirsName,
+    'userLastName': userLastName,
+  };
+}
+
 
 }
+
+
 
