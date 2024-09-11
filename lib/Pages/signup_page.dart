@@ -27,6 +27,7 @@ class _SignUpScreenState extends State<SignupPage> {
 
 
 Future<void> _signUp() async {
+     FocusScope.of(context).unfocus();
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
@@ -272,10 +273,7 @@ Future<void> _signUp() async {
             ),
             width: double.infinity,
             child: TextButton(
-            onPressed:(){
-              _signUp;
-              FocusScope.of(context).unfocus();
-            } ,
+            onPressed: _signUp,
             style: TextButton.styleFrom(
               backgroundColor: const Color.fromARGB(255, 94, 2, 155),
               padding: const EdgeInsets.all(16.0), 

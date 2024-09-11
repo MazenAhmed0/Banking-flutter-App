@@ -124,7 +124,7 @@ class _TransfersPageState extends State<TransfersPage> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: List.generate(apps.length, (index) {
         return Container(
-          height: 90,
+          height: MediaQuery.of(context).size.height * 0.11,
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(14)),
@@ -141,7 +141,7 @@ class _TransfersPageState extends State<TransfersPage> {
             padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
             child: Image.asset(
               apps[index].iconPath,
-              width: 60,
+              width: MediaQuery.of(context).size.width * 0.16,
             ),
           ),
         );
@@ -159,7 +159,7 @@ class _TransfersPageState extends State<TransfersPage> {
               child: SizedBox(
                 height: 105,
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(
                       height: 70,
@@ -208,15 +208,18 @@ class _TransfersPageState extends State<TransfersPage> {
                         )
                       ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.067),
-                      child: Text(
-                        payments?[index]['amount'] ?? '',
-                        style: const TextStyle(
-                          fontSize: 20,
+                    const SizedBox(width: 15,),
+                     Padding(
+                       padding: const EdgeInsets.only(right: 30.0),
+                       child: Text(
+                          '\$${payments?[index]['paymentAmount']}',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ),
+                     ),
+                    
                   ],
                 ),
               ),
