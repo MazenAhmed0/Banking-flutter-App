@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
     userName = widget.username;
     _pages = [
     HomePage(name: userName,),
-    const TrasnfersPage(),
+    const TransfersPage(),
     const ReportsPage(),
   ];
   }

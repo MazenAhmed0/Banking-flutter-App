@@ -132,7 +132,10 @@ String formattedDate() {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the receiver\'s name';
+                  }else if(value == userData['username']){
+                    return "Please enter a valide name";
                   }
+                
                   return null;
                 },
                 onSaved: (value) {
@@ -172,6 +175,7 @@ String formattedDate() {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
+                  FocusScope.of(context).unfocus();
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
                     String receiverId = await getReceiverID(receiverName!);
@@ -205,4 +209,5 @@ String formattedDate() {
       'password': password,
     };
   }
+
 }

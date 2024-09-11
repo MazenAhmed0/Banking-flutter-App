@@ -272,7 +272,10 @@ Future<void> _signUp() async {
             ),
             width: double.infinity,
             child: TextButton(
-            onPressed: _signUp,
+            onPressed:(){
+              _signUp;
+              FocusScope.of(context).unfocus();
+            } ,
             style: TextButton.styleFrom(
               backgroundColor: const Color.fromARGB(255, 94, 2, 155),
               padding: const EdgeInsets.all(16.0), 

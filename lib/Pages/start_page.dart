@@ -29,10 +29,6 @@ class _StartPageState extends State<StartPage> {
         );
       } else {
         timer.cancel();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const SignupPage()),
-        );
       }
       setState(() {});
     });
