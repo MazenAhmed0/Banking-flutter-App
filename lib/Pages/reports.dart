@@ -272,11 +272,6 @@ class _ReportsPageState extends State<ReportsPage> {
                               );
                             },
                           )
-                          // barGroups: [
-                          //   BarChartGroupData(
-                          //     x: 0
-                          //     )
-                          // ]
                         ),
                       ),
                     ),
